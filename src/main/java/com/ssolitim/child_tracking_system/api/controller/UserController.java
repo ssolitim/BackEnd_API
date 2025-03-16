@@ -1,4 +1,4 @@
-package com.ssolitim.child_tracking_system.user.controller;
+package com.ssolitim.child_tracking_system.api.controller;
 
 import java.net.URI;
 
@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ssolitim.child_tracking_system.user.dto.UserLoginRequest;
-import com.ssolitim.child_tracking_system.user.dto.UserLoginResponse;
-import com.ssolitim.child_tracking_system.user.dto.UserRegisterRequest;
-import com.ssolitim.child_tracking_system.user.service.UserService;
+import com.ssolitim.child_tracking_system.api.dto.user.UserLoginRequest;
+import com.ssolitim.child_tracking_system.api.dto.user.UserLoginResponse;
+import com.ssolitim.child_tracking_system.api.dto.user.UserRegisterRequest;
+import com.ssolitim.child_tracking_system.api.service.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

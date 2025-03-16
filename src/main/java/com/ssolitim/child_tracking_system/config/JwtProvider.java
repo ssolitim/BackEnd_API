@@ -14,7 +14,7 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.ssolitim.child_tracking_system.user.model.User;
+import com.ssolitim.child_tracking_system.api.model.User;
 
 @Component
 public class JwtProvider {

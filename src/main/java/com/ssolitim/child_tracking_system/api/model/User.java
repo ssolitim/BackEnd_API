@@ -1,4 +1,4 @@
-package com.ssolitim.child_tracking_system.user.model;
+package com.ssolitim.child_tracking_system.api.model;
 
 import static lombok.AccessLevel.PROTECTED;
 
@@ -18,29 +18,23 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table(name = "child")
+@Table(name = "users")
 @NoArgsConstructor(access = PROTECTED)
-public class Child {
-
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @NotNull
-    @Column(name = "name", nullable = false)
-    private String name;
+    @Column(name = "username", unique = true)
+    private String username;
 
-    @Column(name = "age")
-    private int age;
-
-    @Column(name = "gender")
-    private boolean gender;
+    @NotNull
+    @Column(name = "password", nullable = false)
+    private String password;
 
     @Column(name = "phone")
     private String phone;
-
-    @Column(name = "memo")
-    private String memo;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
@@ -48,11 +42,10 @@ public class Child {
     private Daycare daycare;
 
     @Builder
-    public Child(String name, int age, boolean gender, String phone, String memo) {
-        this.name = name;
-        this.age = age;
-        this.gender = gender;
+    private User(String username, String password, String phone, Daycare daycare) {
+        this.username = username;
+        this.password = password;
         this.phone = phone;
-        this.memo = memo;
+        this.daycare = daycare;
     }
 }

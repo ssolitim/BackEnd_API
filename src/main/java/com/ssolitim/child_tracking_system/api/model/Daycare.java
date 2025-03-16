@@ -1,4 +1,4 @@
-package com.ssolitim.child_tracking_system.user.model;
+package com.ssolitim.child_tracking_system.api.model;
 
 import static lombok.AccessLevel.PROTECTED;
 

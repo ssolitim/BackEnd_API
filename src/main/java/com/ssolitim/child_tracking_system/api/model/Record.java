@@ -1,8 +1,8 @@
-package com.ssolitim.child_tracking_system.user.model;
+package com.ssolitim.child_tracking_system.api.model;
 
 import static lombok.AccessLevel.PROTECTED;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -20,34 +20,39 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table(name = "users")
+@Table(name = "record")
 @NoArgsConstructor(access = PROTECTED)
-public class User {
+public class Record {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotNull
-    @Column(name = "username", unique = true)
-    private String username;
+    @Column(name = "image")
+    private String image;
 
-    @NotNull
-    @Column(name = "password", nullable = false)
-    private String password;
+    @Column(name = "video")
+    private String video;
 
-    @Column(name = "phone")
-    private String phone;
+    @Column(name = "date", columnDefinition = "TIMESTAMP")
+    private LocalDateTime date;
+
+    @Column(name = "memo")
+    private String memo;
+
+    @Column(name = "is_read")
+    private boolean isRead = false;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "daycare_id", nullable = false)
-    private Daycare daycare;
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @Builder
-    private User(String username, String password, String phone, Daycare daycare) {
-        this.username = username;
-        this.password = password;
-        this.phone = phone;
-        this.daycare = daycare;
+    public Record(String image, String video, LocalDateTime date, String memo) {
+        this.image = image;
+        this.video = video;
+        this.date = date;
+        this.memo = memo;
     }
 }

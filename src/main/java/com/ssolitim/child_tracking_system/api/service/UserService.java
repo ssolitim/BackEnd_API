@@ -1,4 +1,4 @@
-package com.ssolitim.child_tracking_system.user.service;
+package com.ssolitim.child_tracking_system.api.service;
 
 import java.util.Objects;
 
@@ -6,13 +6,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ssolitim.child_tracking_system.config.JwtProvider;
-import com.ssolitim.child_tracking_system.user.dto.UserLoginRequest;
-import com.ssolitim.child_tracking_system.user.dto.UserLoginResponse;
-import com.ssolitim.child_tracking_system.user.dto.UserRegisterRequest;
-import com.ssolitim.child_tracking_system.user.model.Daycare;
-import com.ssolitim.child_tracking_system.user.model.User;
-import com.ssolitim.child_tracking_system.user.repository.DaycareRepository;
-import com.ssolitim.child_tracking_system.user.repository.UserRepository;
+import com.ssolitim.child_tracking_system.api.dto.user.UserLoginRequest;
+import com.ssolitim.child_tracking_system.api.dto.user.UserLoginResponse;
+import com.ssolitim.child_tracking_system.api.dto.user.UserRegisterRequest;
+import com.ssolitim.child_tracking_system.api.model.Daycare;
+import com.ssolitim.child_tracking_system.api.model.User;
+import com.ssolitim.child_tracking_system.api.repository.DaycareRepository;
+import com.ssolitim.child_tracking_system.api.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 

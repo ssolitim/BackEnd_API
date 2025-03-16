@@ -1,8 +1,6 @@
-package com.ssolitim.child_tracking_system.user.model;
+package com.ssolitim.child_tracking_system.api.model;
 
 import static lombok.AccessLevel.PROTECTED;
-
-import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -20,39 +18,41 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table(name = "record")
+@Table(name = "child")
 @NoArgsConstructor(access = PROTECTED)
-public class Record {
+public class Child {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "image")
-    private String image;
+    @NotNull
+    @Column(name = "name", nullable = false)
+    private String name;
 
-    @Column(name = "video")
-    private String video;
+    @Column(name = "age")
+    private int age;
 
-    @Column(name = "date", columnDefinition = "TIMESTAMP")
-    private LocalDateTime date;
+    @Column(name = "gender")
+    private boolean gender;
+
+    @Column(name = "phone")
+    private String phone;
 
     @Column(name = "memo")
     private String memo;
 
-    @Column(name = "is_read")
-    private boolean isRead = false;
-
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @JoinColumn(name = "daycare_id", nullable = false)
+    private Daycare daycare;
 
     @Builder
-    public Record(String image, String video, LocalDateTime date, String memo) {
-        this.image = image;
-        this.video = video;
-        this.date = date;
+    public Child(String name, int age, boolean gender, String phone, String memo) {
+        this.name = name;
+        this.age = age;
+        this.gender = gender;
+        this.phone = phone;
         this.memo = memo;
     }
 }
