@@ -9,7 +9,9 @@ import com.ssolitim.child_tracking_system.config.JwtProvider;
 import com.ssolitim.child_tracking_system.user.dto.UserLoginRequest;
 import com.ssolitim.child_tracking_system.user.dto.UserLoginResponse;
 import com.ssolitim.child_tracking_system.user.dto.UserRegisterRequest;
+import com.ssolitim.child_tracking_system.user.model.Daycare;
 import com.ssolitim.child_tracking_system.user.model.User;
+import com.ssolitim.child_tracking_system.user.repository.DaycareRepository;
 import com.ssolitim.child_tracking_system.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,7 @@ public class UserService {
 
     private final JwtProvider jwtProvider;
     private final UserRepository userRepository;
+    private final DaycareRepository daycareRepository;
 
     @Transactional
     public UserLoginResponse login(UserLoginRequest request) {
@@ -40,9 +43,14 @@ public class UserService {
                 throw new IllegalArgumentException("이미 존재하는 유저입니다.");
             });
 
+        Daycare daycare = daycareRepository.findById(request.daycareId())
+            .orElseThrow(() -> new IllegalArgumentException("어린이집을 찾을 수 없습니다."));
+
         userRepository.save(User.builder()
             .username(request.username())
             .password(request.password())
+            .phone(request.phone())
+            .daycare(daycare)
             .build());
     }
 }
