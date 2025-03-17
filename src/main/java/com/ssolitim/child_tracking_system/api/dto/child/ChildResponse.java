@@ -30,7 +30,7 @@ public record ChildResponse (
     String memo,
 
     @Schema(description = "어린이집 고유 번호", example = "2", requiredMode = REQUIRED)
-    Integer daycareId
+    Integer daycareRoomId
 ) {
     public static ChildResponse from(Child child) {
         return new ChildResponse(
@@ -40,7 +40,7 @@ public record ChildResponse (
             child.isGender(),
             child.getPhone(),
             child.getMemo(),
-            child.getDaycare().getId()
+            child.getDaycareRoom().getId()
         );
     }
 }
