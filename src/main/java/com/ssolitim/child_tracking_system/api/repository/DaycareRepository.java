@@ -8,6 +8,7 @@ import org.springframework.data.repository.Repository;
 import com.ssolitim.child_tracking_system.api.model.Daycare;
 
 public interface DaycareRepository extends Repository<Daycare, Integer> {
+
     Daycare save(Daycare daycare);
 
     Optional<Daycare> findById(Integer id);

@@ -4,9 +4,12 @@ import static lombok.AccessLevel.PROTECTED;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
@@ -15,20 +18,26 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table(name = "daycare")
+@Table(name = "daycare_room")
 @NoArgsConstructor(access = PROTECTED)
-public class Daycare {
+public class DaycareRoom {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @NotNull
-    @Column(name = "name", length = 255, nullable = false)
-    private String name;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "daycare_id", nullable = false)
+    private Daycare daycare;
+
+    @NotNull
+    @Column(name = "room", length = 255, nullable = false)
+    private String room;
 
     @Builder
-    public Daycare(String name) {
-        this.name = name;
+    public DaycareRoom(Daycare daycare, String room) {
+        this.daycare = daycare;
+        this.room = room;
     }
 }

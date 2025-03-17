@@ -44,15 +44,32 @@ public class Child {
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "daycare_id", nullable = false)
-    private Daycare daycare;
+    @JoinColumn(name = "daycare_room_id", nullable = false)
+    private DaycareRoom daycareRoom;
 
     @Builder
-    public Child(String name, int age, boolean gender, String phone, String memo) {
+    public Child(String name, int age, boolean gender, String phone, String memo, DaycareRoom daycareRoom) {
         this.name = name;
         this.age = age;
         this.gender = gender;
         this.phone = phone;
         this.memo = memo;
+        this.daycareRoom = daycareRoom;
+    }
+
+    public void update(
+        String name,
+        int age,
+        boolean gender,
+        String phone,
+        String memo,
+        DaycareRoom daycareroom
+    ) {
+        this.name = name;
+        this.age = age;
+        this.gender = gender;
+        this.phone = phone;
+        this.memo = memo;
+        this.daycareRoom = daycareroom;
     }
 }

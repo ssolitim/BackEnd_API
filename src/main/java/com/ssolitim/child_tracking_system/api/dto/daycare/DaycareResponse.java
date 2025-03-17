@@ -11,16 +11,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record DaycareResponse (
 
-    @Schema(description = "어린이집 id", example = "1", requiredMode = REQUIRED)
+    @Schema(description = "어린이집 고유 id", example = "1", requiredMode = REQUIRED)
     Integer id,
 
     @Schema(description = "어린이집 이름", example = "한기대 어린이집", requiredMode = REQUIRED)
-    String name,
-
-    @Schema(description = "어린이집 반", example = "해바라기반", requiredMode = REQUIRED)
-    String room
+    String name
 ) {
     public static DaycareResponse from(Daycare daycare) {
-        return new DaycareResponse(daycare.getId(), daycare.getName(), daycare.getRoom());
+        return new DaycareResponse(daycare.getId(), daycare.getName());
     }
 }
