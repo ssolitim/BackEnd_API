@@ -1,4 +1,4 @@
-package com.ssolitim.child_tracking_system.config;
+package com.ssolitim.child_tracking_system.config.auth;
 
 import java.security.Key;
 import java.time.Instant;
@@ -57,7 +57,7 @@ public class JwtProvider {
                 .toString();
             return Integer.parseInt(userId);
         } catch (JwtException e) {
-            throw new IllegalArgumentException("토큰이 유효하지 않습니다. token: " + token);
+            throw new IllegalArgumentException("올바르지 않은 인증정보입니다. token: " + token);
         }
     }
 

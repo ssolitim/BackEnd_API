@@ -5,7 +5,7 @@ import java.util.Objects;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ssolitim.child_tracking_system.config.JwtProvider;
+import com.ssolitim.child_tracking_system.config.auth.JwtProvider;
 import com.ssolitim.child_tracking_system.api.dto.user.UserLoginRequest;
 import com.ssolitim.child_tracking_system.api.dto.user.UserLoginResponse;
 import com.ssolitim.child_tracking_system.api.dto.user.UserRegisterRequest;

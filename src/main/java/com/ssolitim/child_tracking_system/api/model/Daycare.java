@@ -24,7 +24,7 @@ public class Daycare {
     private Integer id;
 
     @NotNull
-    @Column(name = "name", length = 255, nullable = false)
+    @Column(name = "name", nullable = false)
     private String name;
 
     @Builder

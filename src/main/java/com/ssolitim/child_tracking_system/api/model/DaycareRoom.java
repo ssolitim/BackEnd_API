@@ -32,7 +32,7 @@ public class DaycareRoom {
     private Daycare daycare;
 
     @NotNull
-    @Column(name = "room", length = 255, nullable = false)
+    @Column(name = "room", nullable = false)
     private String room;
 
     @Builder
