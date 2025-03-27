@@ -4,16 +4,15 @@ import static lombok.AccessLevel.PROTECTED;
 
 import java.time.LocalDateTime;
 
+import com.ssolitim.child_tracking_system.config.LocalDateTimeAttributeConverter;
+
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,6 +33,7 @@ public class Record {
     @Column(name = "video")
     private String video;
 
+    @Convert(converter = LocalDateTimeAttributeConverter.class)
     @Column(name = "date", columnDefinition = "TIMESTAMP")
     private LocalDateTime date;
 
@@ -42,11 +42,6 @@ public class Record {
 
     @Column(name = "is_read")
     private boolean isRead = false;
-
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
 
     @Builder
     public Record(String image, String video, LocalDateTime date, String memo) {
