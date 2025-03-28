@@ -8,4 +8,6 @@ import com.ssolitim.child_tracking_system.api.model.Record;
 public interface RecordRepository extends Repository<Record, Integer> {
 
     List<Record> findAll();
+
+    Record save(Record record);
 }
