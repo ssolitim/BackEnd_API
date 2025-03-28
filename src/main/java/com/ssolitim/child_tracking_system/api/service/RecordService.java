@@ -23,8 +23,8 @@ import lombok.RequiredArgsConstructor;
 public class RecordService {
 
     private final RecordRepository recordRepository;
-    private final String IMAGE_STORAGE_ADDRESS = "/Users/kwoo/Desktop/";
-    private final String VIDEO_STORAGE_ADDRESS = "/Users/kwoo/Desktop/";
+    private final String IMAGE_STORAGE_ADDRESS = "/home/ubuntu/detect/images";
+    private final String VIDEO_STORAGE_ADDRESS = "/home/ubuntu/detect/videos";
 
     LocalDateTime now = LocalDateTime.now();
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
