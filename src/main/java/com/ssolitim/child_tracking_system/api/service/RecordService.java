@@ -23,12 +23,10 @@ import lombok.RequiredArgsConstructor;
 public class RecordService {
 
     private final RecordRepository recordRepository;
-    private final String IMAGE_STORAGE_ADDRESS = "/home/ubuntu/detect/images";
-    private final String VIDEO_STORAGE_ADDRESS = "/home/ubuntu/detect/videos";
+    private static final String IMAGE_STORAGE_ADDRESS = "/home/ubuntu/detect/images/";
+    private static final String VIDEO_STORAGE_ADDRESS = "/home/ubuntu/detect/videos/";
 
-    LocalDateTime now = LocalDateTime.now();
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-    String timestamp = now.format(formatter);
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public List<RecordResponse> getRecord() {
         List<Record> records = recordRepository.findAll();
@@ -39,28 +37,32 @@ public class RecordService {
 
     @Transactional
     public void filesUploadOnServer(MultipartFile[] uploadFiles) {
+        LocalDateTime now = LocalDateTime.now(); // 호출될 때마다 새로운 시간 생성
+        String timestamp = now.format(formatter);
+
         List<String> fullPathList = new ArrayList<>();
         for (MultipartFile uploadFile : uploadFiles) {
             String contentType = uploadFile.getContentType();
             assert contentType != null;
-            String fullPath = getFullPath(contentType);
+            String fullPath = getFullPath(contentType, timestamp);
             fullPathList.add(fullPath);
             try {
                 uploadFile.transferTo(new File(fullPath));
             } catch (IOException e) {
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException("파일 저장 중 오류 발생", e);
             }
         }
+
         Record record = Record.builder()
-            .image(fullPathList.get(0))
-            .video(fullPathList.get(1))
+            .image(timestamp + ".jpg")
+            .video(timestamp + ".mp4")
             .date(now)
             .memo(null)
             .build();
         recordRepository.save(record);
     }
 
-    private String getFullPath(String contentType) {
+    private String getFullPath(String contentType, String timestamp) {
         if (contentType.equals("video/mp4")) {
             return VIDEO_STORAGE_ADDRESS + timestamp + ".mp4";
         } else if (contentType.equals("image/jpeg")) {
