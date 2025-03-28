@@ -37,6 +37,17 @@ public class RecordService {
     }
 
     @Transactional
+    public List<RecordResponse> readRecord(Integer recordId) {
+        Record record = recordRepository.findById(recordId)
+            .orElseThrow(() -> new IllegalArgumentException("기록을 찾을 수 없습니다."));
+        record.read();
+        List<Record> records = recordRepository.findAll();
+        return records.stream()
+            .map(RecordResponse::from)
+            .toList();
+    }
+
+    @Transactional
     public void filesUploadOnServer(MultipartFile[] uploadFiles) {
         LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
         String timestamp = now.format(formatter);

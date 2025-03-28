@@ -50,4 +50,8 @@ public class Record {
         this.date = date;
         this.memo = memo;
     }
+
+    public void read() {
+        this.isRead = true;
+    }
 }

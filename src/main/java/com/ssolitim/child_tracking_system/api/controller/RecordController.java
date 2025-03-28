@@ -46,7 +46,6 @@ public class RecordController {
     @Operation(summary = "사진/영상 기록 경로 조회")
     @GetMapping("/record")
     ResponseEntity<List<RecordResponse>> getRecord(
-        //@Auth Integer userId
     ) {
         List<RecordResponse> response = recordService.getRecord();
         return ResponseEntity.ok(response);
@@ -108,5 +107,22 @@ public class RecordController {
     @PostMapping("/record/upload")
     public void filesUpload(@RequestPart MultipartFile[] uploadFiles) {
         recordService.filesUploadOnServer(uploadFiles);
+    }
+
+    @ApiResponses(
+        value = {
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "404", content = @Content(schema = @Schema(hidden = true)))
+        }
+    )
+    @Operation(summary = "알림 읽음 확인")
+    @PostMapping("/record/read/{recordId}")
+    public ResponseEntity<List<RecordResponse>> readRecord(
+        @PathVariable Integer recordId
+    ) {
+        List<RecordResponse> response = recordService.readRecord(recordId);
+        return ResponseEntity.ok(response);
     }
 }
