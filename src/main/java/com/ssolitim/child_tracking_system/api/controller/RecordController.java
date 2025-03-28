@@ -104,7 +104,7 @@ public class RecordController {
             @ApiResponse(responseCode = "404", content = @Content(schema = @Schema(hidden = true)))
         }
     )
-    @Operation(summary = "JPG/MP4 업로드 (첫번째:jpg, 두번째:mp4)")
+    @Operation(summary = "AI서버 API 전용 - JPG/MP4 업로드 (첫번째:jpg, 두번째:mp4)")
     @PostMapping("/record/upload")
     public void filesUpload(@RequestPart MultipartFile[] uploadFiles) {
         recordService.filesUploadOnServer(uploadFiles);
