@@ -54,4 +54,8 @@ public class Record {
     public void read() {
         this.isRead = true;
     }
+
+    public void updateMemo(String memo) {
+        this.memo = memo;
+    }
 }

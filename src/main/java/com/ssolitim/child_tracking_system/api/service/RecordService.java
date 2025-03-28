@@ -74,6 +74,29 @@ public class RecordService {
         recordRepository.save(record);
     }
 
+    @Transactional
+    public List<RecordResponse> deleteRecord(Integer recordId) {
+        Record record = recordRepository.findById(recordId)
+            .orElseThrow(() -> new IllegalArgumentException("기록을 찾을 수 없습니다."));
+        recordRepository.deleteById(record.getId());
+        List<Record> records = recordRepository.findAll();
+        return records.stream()
+            .map(RecordResponse::from)
+            .toList();
+    }
+
+    @Transactional
+    public List<RecordResponse> updateRecordMemo(Integer recordId, String memo) {
+        Record record = recordRepository.findById(recordId)
+            .orElseThrow(() -> new IllegalArgumentException("기록을 찾을 수 없습니다."));
+        record.updateMemo(memo);
+        recordRepository.save(record);
+        List<Record> records = recordRepository.findAll();
+        return records.stream()
+            .map(RecordResponse::from)
+            .toList();
+    }
+
     private String getFullPath(String contentType, String timestamp) {
         if (contentType.equals("video/mp4")) {
             return VIDEO_STORAGE_ADDRESS + timestamp + ".mp4";

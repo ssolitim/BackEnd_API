@@ -13,4 +13,6 @@ public interface RecordRepository extends Repository<Record, Integer> {
     Record save(Record record);
 
     Optional<Record> findById(Integer id);
+
+    void deleteById(Integer id);
 }

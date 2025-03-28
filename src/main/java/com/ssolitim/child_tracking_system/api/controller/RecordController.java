@@ -10,13 +10,17 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.ssolitim.child_tracking_system.api.dto.record.RecordMemoUpdateRequest;
 import com.ssolitim.child_tracking_system.api.dto.record.RecordResponse;
 import com.ssolitim.child_tracking_system.api.service.RecordService;
 
@@ -26,6 +30,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -123,6 +128,43 @@ public class RecordController {
         @PathVariable Integer recordId
     ) {
         List<RecordResponse> response = recordService.readRecord(recordId);
+        return ResponseEntity.ok(response);
+    }
+
+    @ApiResponses(
+        value = {
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "404", content = @Content(schema = @Schema(hidden = true)))
+        }
+    )
+    @Operation(summary = "알림(기록) 삭제")
+    @DeleteMapping("/record/{recordId}")
+    public ResponseEntity<List<RecordResponse>> deleteRecord(
+        @PathVariable Integer recordId
+    ) {
+        recordService.deleteRecord(recordId);
+        List<RecordResponse> response = recordService.getRecord();
+        return ResponseEntity.ok(response);
+    }
+
+    @ApiResponses(
+        value = {
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "404", content = @Content(schema = @Schema(hidden = true)))
+        }
+    )
+    @Operation(summary = "기록 메모 수정")
+    @PutMapping("/record/{recordId}")
+    public ResponseEntity<List<RecordResponse>> updateRecordMemo(
+        @PathVariable Integer recordId,
+        @RequestBody @Valid RecordMemoUpdateRequest request
+    ) {
+        recordService.updateRecordMemo(recordId, request.memo());
+        List<RecordResponse> response = recordService.getRecord();
         return ResponseEntity.ok(response);
     }
 }
