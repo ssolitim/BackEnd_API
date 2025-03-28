@@ -17,10 +17,10 @@ public record RecordResponse(
     Integer id,
 
     @Schema(description = "이미지 경로", example = "2025-03-28 07:08:03.jpg", requiredMode = REQUIRED)
-    String image,
+    String imageName,
 
     @Schema(description = "비디오 경로", example = "2025-03-28 07:08:03.mp4", requiredMode = REQUIRED)
-    String video,
+    String videoName,
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Schema(description = "탐지 일시", example = "2025-03-28 07:08:03", requiredMode = REQUIRED)
