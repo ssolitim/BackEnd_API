@@ -3,6 +3,7 @@ package com.ssolitim.child_tracking_system.api.service;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +38,7 @@ public class RecordService {
 
     @Transactional
     public void filesUploadOnServer(MultipartFile[] uploadFiles) {
-        LocalDateTime now = LocalDateTime.now(); // 호출될 때마다 새로운 시간 생성
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
         String timestamp = now.format(formatter);
 
         List<String> fullPathList = new ArrayList<>();
