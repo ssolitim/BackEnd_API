@@ -1,5 +1,6 @@
 package com.ssolitim.child_tracking_system.api.controller;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -70,12 +71,20 @@ public class RecordController {
         produces = MediaType.IMAGE_JPEG_VALUE
     )
     public ResponseEntity<byte[]> getImageWithMediaType(
-        @PathVariable("imageName")String imageName
+        @PathVariable("imageName") String imageName
     ) throws IOException {
-        InputStream imageStream = new FileInputStream("/home/ubuntu/detect/images/" + imageName);
-        byte[] imageByteArray = IOUtils.toByteArray(imageStream);
-        imageStream.close();
-        return new ResponseEntity<byte[]>(imageByteArray, HttpStatus.OK);
+        File imageFile = new File("/home/ubuntu/detect/images/" + imageName);
+
+        if (!imageFile.exists()) {
+            throw new IllegalArgumentException("파일이 존재하지 않습니다.");
+        }
+
+        try (InputStream imageStream = new FileInputStream(imageFile)) {
+            byte[] imageByteArray = IOUtils.toByteArray(imageStream);
+            return new ResponseEntity<>(imageByteArray, HttpStatus.OK);
+        } catch (IOException e) {
+            throw new IOException("이미지 파일을 읽는 중에 오류가 발생했습니다.", e);
+        }
     }
 
     @ApiResponses(
@@ -94,10 +103,18 @@ public class RecordController {
     public ResponseEntity<byte[]> getVideoWithMediaType(
         @PathVariable("videoName") String videoName
     ) throws IOException {
-        InputStream videoStream = new FileInputStream("/home/ubuntu/detect/videos/" + videoName);
-        byte[] videoByteArray = IOUtils.toByteArray(videoStream);
-        videoStream.close();
-        return new ResponseEntity<byte[]>(videoByteArray, HttpStatus.OK);
+        File videoFile = new File("/home/ubuntu/detect/videos/" + videoName);
+
+        if (!videoFile.exists()) {
+            throw new IllegalArgumentException("파일이 존재하지 않습니다.");
+        }
+
+        try (InputStream videoStream = new FileInputStream(videoFile)) {
+            byte[] videoByteArray = IOUtils.toByteArray(videoStream);
+            return new ResponseEntity<>(videoByteArray, HttpStatus.OK);
+        } catch (IOException e) {
+            throw new IOException("비디오 파일을 읽는 중에 오류가 발생했습니다.", e);
+        }
     }
 
     @ApiResponses(
