@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.google.firebase.messaging.FirebaseMessagingException;
 import com.ssolitim.child_tracking_system.api.dto.record.RecordMemoUpdateRequest;
 import com.ssolitim.child_tracking_system.api.dto.record.RecordResponse;
 import com.ssolitim.child_tracking_system.api.service.RecordService;
@@ -127,7 +128,7 @@ public class RecordController {
     )
     @Operation(summary = "AI서버 API 전용 - JPG/MP4 업로드 (첫번째:jpg, 두번째:mp4)")
     @PostMapping("/record/upload")
-    public void filesUpload(@RequestPart MultipartFile[] uploadFiles) {
+    public void filesUpload(@RequestPart MultipartFile[] uploadFiles) throws FirebaseMessagingException {
         recordService.filesUploadOnServer(uploadFiles);
     }
 

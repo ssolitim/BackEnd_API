@@ -12,6 +12,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.FirebaseMessagingException;
+import com.google.firebase.messaging.Message;
+import com.google.firebase.messaging.Notification;
 import com.ssolitim.child_tracking_system.api.dto.record.RecordResponse;
 import com.ssolitim.child_tracking_system.api.model.Record;
 import com.ssolitim.child_tracking_system.api.repository.RecordRepository;
@@ -24,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 public class RecordService {
 
     private final RecordRepository recordRepository;
+    private final FirebaseMessaging firebaseMessaging;
     private static final String IMAGE_STORAGE_ADDRESS = "/home/ubuntu/detect/images/";
     private static final String VIDEO_STORAGE_ADDRESS = "/home/ubuntu/detect/videos/";
 
@@ -48,7 +53,7 @@ public class RecordService {
     }
 
     @Transactional
-    public void filesUploadOnServer(MultipartFile[] uploadFiles) {
+    public void filesUploadOnServer(MultipartFile[] uploadFiles) throws FirebaseMessagingException {
         LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
         String timestamp = now.format(formatter);
 
@@ -72,6 +77,9 @@ public class RecordService {
             .memo(null)
             .build();
         recordRepository.save(record);
+
+        // 안드로이드에서 토큰 발급 후 "token" 채워넣기
+        firebaseMessaging.send(makeMessage("token", "이탈 감지", "이탈이 감지되었습니다."));
     }
 
     @Transactional
@@ -105,5 +113,18 @@ public class RecordService {
         } else {
             throw new IllegalArgumentException("지원하지 않는 파일 형식입니다.");
         }
+    }
+
+    public static Message makeMessage(String targetToken, String title, String body) {
+        Notification notification = Notification
+            .builder()
+            .setTitle(title)
+            .setBody(body)
+            .build();
+        return Message
+            .builder()
+            .setNotification(notification)
+            .setToken(targetToken)
+            .build();
     }
 }
