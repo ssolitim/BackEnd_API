@@ -20,6 +20,8 @@ import com.ssolitim.child_tracking_system.api.dto.record.RecordResponse;
 import com.ssolitim.child_tracking_system.api.model.Record;
 import com.ssolitim.child_tracking_system.api.repository.RecordRepository;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -31,6 +33,9 @@ public class RecordService {
     private final FirebaseMessaging firebaseMessaging;
     private static final String IMAGE_STORAGE_ADDRESS = "/home/ubuntu/detect/images/";
     private static final String VIDEO_STORAGE_ADDRESS = "/home/ubuntu/detect/videos/";
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
@@ -86,8 +91,22 @@ public class RecordService {
     public List<RecordResponse> deleteRecord(Integer recordId) {
         Record record = recordRepository.findById(recordId)
             .orElseThrow(() -> new IllegalArgumentException("기록을 찾을 수 없습니다."));
-        recordRepository.deleteById(record.getId());
+        record.delete();
         List<Record> records = recordRepository.findAll();
+        return records.stream()
+            .map(RecordResponse::from)
+            .toList();
+    }
+
+    @Transactional
+    public List<RecordResponse> restoreDeletedRecord() {
+        List<Record> records = recordRepository.findAllIncludingDeleted();
+
+        records.forEach(Record::restore);
+
+        recordRepository.saveAll(records);
+        entityManager.flush(); // 즉시 반영하여 데이터 일관성 유지
+
         return records.stream()
             .map(RecordResponse::from)
             .toList();

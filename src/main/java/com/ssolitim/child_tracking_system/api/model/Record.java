@@ -4,6 +4,8 @@ import static lombok.AccessLevel.PROTECTED;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.Where;
+
 import com.ssolitim.child_tracking_system.config.LocalDateTimeAttributeConverter;
 
 import jakarta.persistence.Column;
@@ -13,6 +15,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +23,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @Table(name = "record")
+@Where(clause = "is_deleted=0")
 @NoArgsConstructor(access = PROTECTED)
 public class Record {
 
@@ -38,10 +42,14 @@ public class Record {
     private LocalDateTime date;
 
     @Column(name = "memo")
-    private String memo;
+    private String memo = "아이가 어린이집을 벗어났습니다.";
 
     @Column(name = "is_read")
     private boolean isRead = false;
+
+    @NotNull
+    @Column(name = "is_deleted", nullable = false)
+    private boolean isDeleted = false;
 
     @Builder
     public Record(String image, String video, LocalDateTime date, String memo) {
@@ -57,5 +65,13 @@ public class Record {
 
     public void updateMemo(String memo) {
         this.memo = memo;
+    }
+
+    public void delete() {
+        this.isDeleted = true;
+    }
+
+    public void restore() {
+        this.isDeleted = false;
     }
 }

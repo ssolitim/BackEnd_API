@@ -175,6 +175,21 @@ public class RecordController {
             @ApiResponse(responseCode = "404", content = @Content(schema = @Schema(hidden = true)))
         }
     )
+    @Operation(summary = "삭제된 알림(기록) 전부 복구")
+    public ResponseEntity<List<RecordResponse>> restoreRecord() {
+        recordService.restoreDeletedRecord();
+        List<RecordResponse> response = recordService.getRecord();
+        return ResponseEntity.ok(response);
+    }
+
+    @ApiResponses(
+        value = {
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "404", content = @Content(schema = @Schema(hidden = true)))
+        }
+    )
     @Operation(summary = "기록 메모 수정")
     @PutMapping("/record/{recordId}")
     public ResponseEntity<List<RecordResponse>> updateRecordMemo(
