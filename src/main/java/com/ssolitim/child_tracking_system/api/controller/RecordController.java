@@ -176,6 +176,7 @@ public class RecordController {
         }
     )
     @Operation(summary = "삭제된 알림(기록) 전부 복구")
+    @PostMapping("/record/restore")
     public ResponseEntity<List<RecordResponse>> restoreRecord() {
         recordService.restoreDeletedRecord();
         List<RecordResponse> response = recordService.getRecord();
