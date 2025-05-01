@@ -52,11 +52,10 @@ public class Record {
     private boolean isDeleted = false;
 
     @Builder
-    public Record(String image, String video, LocalDateTime date, String memo) {
+    public Record(String image, String video, LocalDateTime date) {
         this.image = image;
         this.video = video;
         this.date = date;
-        this.memo = memo;
     }
 
     public void read() {

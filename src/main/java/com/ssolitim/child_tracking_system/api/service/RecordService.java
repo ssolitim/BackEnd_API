@@ -42,6 +42,7 @@ public class RecordService {
     public List<RecordResponse> getRecord() {
         List<Record> records = recordRepository.findAll();
         return records.stream()
+            .sorted((r1, r2) -> r2.getDate().compareTo(r1.getDate())) // 날짜 최신순 정렬
             .map(RecordResponse::from)
             .toList();
     }
@@ -79,7 +80,6 @@ public class RecordService {
             .image(timestamp + ".jpg")
             .video(timestamp + ".mp4")
             .date(now)
-            .memo(null)
             .build();
         recordRepository.save(record);
 
