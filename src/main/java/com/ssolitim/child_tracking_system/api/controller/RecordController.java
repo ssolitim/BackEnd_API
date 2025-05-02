@@ -141,7 +141,7 @@ public class RecordController {
         }
     )
     @Operation(summary = "알림 읽음 취소")
-    @PostMapping("/record/read/{recordId}")
+    @PostMapping("/record/read/cancel/{recordId}")
     public ResponseEntity<List<RecordResponse>> cancelReadRecord(
         @PathVariable Integer recordId
     ) {
