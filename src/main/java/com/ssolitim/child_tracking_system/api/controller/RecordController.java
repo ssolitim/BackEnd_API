@@ -140,6 +140,23 @@ public class RecordController {
             @ApiResponse(responseCode = "404", content = @Content(schema = @Schema(hidden = true)))
         }
     )
+    @Operation(summary = "알림 읽음 취소")
+    @PostMapping("/record/read/{recordId}")
+    public ResponseEntity<List<RecordResponse>> cancelReadRecord(
+        @PathVariable Integer recordId
+    ) {
+        List<RecordResponse> response = recordService.cancelReadRecord(recordId);
+        return ResponseEntity.ok(response);
+    }
+
+    @ApiResponses(
+        value = {
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "404", content = @Content(schema = @Schema(hidden = true)))
+        }
+    )
     @Operation(summary = "알림 읽음 확인")
     @PostMapping("/record/read/{recordId}")
     public ResponseEntity<List<RecordResponse>> readRecord(

@@ -30,7 +30,7 @@ import lombok.RequiredArgsConstructor;
 public class RecordService {
 
     private final RecordRepository recordRepository;
-    //private final FirebaseMessaging firebaseMessaging;
+    private final FirebaseMessaging firebaseMessaging;
     private static final String IMAGE_STORAGE_ADDRESS = "/home/ubuntu/detect/images/";
     private static final String VIDEO_STORAGE_ADDRESS = "/home/ubuntu/detect/videos/";
 
@@ -52,6 +52,17 @@ public class RecordService {
         Record record = recordRepository.findById(recordId)
             .orElseThrow(() -> new IllegalArgumentException("기록을 찾을 수 없습니다."));
         record.read();
+        List<Record> records = recordRepository.findAll();
+        return records.stream()
+            .map(RecordResponse::from)
+            .toList();
+    }
+
+    @Transactional
+    public List<RecordResponse> cancelReadRecord(Integer recordId) {
+        Record record = recordRepository.findById(recordId)
+            .orElseThrow(() -> new IllegalArgumentException("기록을 찾을 수 없습니다."));
+        record.unRead();
         List<Record> records = recordRepository.findAll();
         return records.stream()
             .map(RecordResponse::from)
@@ -84,7 +95,7 @@ public class RecordService {
         recordRepository.save(record);
 
         // 안드로이드에서 토큰 발급 후 "token" 채워넣기
-        //firebaseMessaging.send(makeMessage("token", "이탈 감지", "이탈이 감지되었습니다."));
+        firebaseMessaging.send(makeMessage("ExponentPushToken[CJ-6dbFJNUbf9kaqF55iaG]", "이탈 감지", "이탈이 감지되었습니다."));
     }
 
     @Transactional

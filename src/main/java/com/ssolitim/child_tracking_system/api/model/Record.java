@@ -62,6 +62,10 @@ public class Record {
         this.isRead = true;
     }
 
+    public void unRead() {
+        this.isRead = false;
+    }
+
     public void updateMemo(String memo) {
         this.memo = memo;
     }
