@@ -16,14 +16,17 @@ import com.google.firebase.messaging.FirebaseMessaging;
 public class FirebaseConfig {
     @Bean
     public FirebaseApp firebaseApp() throws IOException {
-        ClassPathResource resource = new ClassPathResource("kinderguard-b7db7-firebase-adminsdk-fbsvc-09cc151158.json");
-        InputStream aboutFirebaseFile = resource.getInputStream();
+        if (FirebaseApp.getApps().isEmpty()) {
+            ClassPathResource resource = new ClassPathResource("kinderguard-b7db7-firebase-adminsdk-fbsvc-b984585522.json");
+            InputStream aboutFirebaseFile = resource.getInputStream();
 
-        FirebaseOptions options = FirebaseOptions
-            .builder()
-            .setCredentials(GoogleCredentials.fromStream(aboutFirebaseFile))
-            .build();
-        return FirebaseApp.initializeApp(options);
+            FirebaseOptions options = FirebaseOptions.builder()
+                .setCredentials(GoogleCredentials.fromStream(aboutFirebaseFile))
+                .build();
+            return FirebaseApp.initializeApp(options);
+        } else {
+            return FirebaseApp.getInstance();
+        }
     }
 
     @Bean

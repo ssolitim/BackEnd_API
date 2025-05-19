@@ -1,5 +1,7 @@
 package com.ssolitim.child_tracking_system.config;
 
+import java.nio.charset.StandardCharsets;
+
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.context.request.ServletWebRequest;
@@ -37,20 +39,15 @@ public class GlobalRequestLoggingAdvice {
     }
 
     private String getRequestBody(HttpServletRequest request) {
-        var wrapper = WebUtils.getNativeRequest(request, ContentCachingRequestWrapper.class);
-        if (wrapper == null) {
-            return " - ";
-        }
+        ContentCachingRequestWrapper wrapper = WebUtils.getNativeRequest(request, ContentCachingRequestWrapper.class);
+        if (wrapper == null) return " - (no wrapper)";
+        byte[] buf = wrapper.getContentAsByteArray();
+        if (buf.length == 0) return " - (empty or not yet read)";
         try {
-            // body가 읽히지 않고 예외처리 되는 경우에 캐시하기 위함
-            wrapper.getInputStream().readAllBytes();
-            byte[] buf = wrapper.getContentAsByteArray();
-            if (buf.length == 0) {
-                return " - ";
-            }
-            return new String(buf, wrapper.getCharacterEncoding());
+            String encoding = wrapper.getCharacterEncoding() != null ? wrapper.getCharacterEncoding() : StandardCharsets.UTF_8.name();
+            return new String(buf, encoding);
         } catch (Exception e) {
-            return " - ";
+            return " - (decoding error)";
         }
     }
 }

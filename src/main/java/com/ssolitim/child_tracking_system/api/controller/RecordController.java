@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.ssolitim.child_tracking_system.api.dto.record.RecordMemoUpdateRequest;
 import com.ssolitim.child_tracking_system.api.dto.record.RecordResponse;
+import com.ssolitim.child_tracking_system.api.dto.record.TestAlarmRequest;
 import com.ssolitim.child_tracking_system.api.service.RecordService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -128,8 +130,11 @@ public class RecordController {
     )
     @Operation(summary = "AI서버 API 전용 - JPG/MP4 업로드 (첫번째:jpg, 두번째:mp4)")
     @PostMapping("/record/upload")
-    public void filesUpload(@RequestPart MultipartFile[] uploadFiles) throws FirebaseMessagingException {
-        recordService.filesUploadOnServer(uploadFiles);
+    public void filesUpload(
+        @RequestPart MultipartFile[] uploadFiles,
+        @RequestParam(name = "direct", required = false, defaultValue = "false") boolean direct
+    ) throws FirebaseMessagingException {
+        recordService.filesUploadOnServer(uploadFiles, direct);
     }
 
     @ApiResponses(
@@ -217,5 +222,22 @@ public class RecordController {
         recordService.updateRecordMemo(recordId, request.memo());
         List<RecordResponse> response = recordService.getRecord();
         return ResponseEntity.ok(response);
+    }
+
+    @ApiResponses(
+        value = {
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "404", content = @Content(schema = @Schema(hidden = true)))
+        }
+    )
+    @Operation(summary = "알람 테스트")
+    @PostMapping("/alarm/test")
+    public ResponseEntity<Void> testAlarm(
+        @RequestBody @Valid TestAlarmRequest request
+    ) throws FirebaseMessagingException {
+        recordService.testAlarm(request.token());
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

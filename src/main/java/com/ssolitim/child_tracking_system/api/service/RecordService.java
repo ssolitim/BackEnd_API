@@ -8,6 +8,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.http.*;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
+import com.google.firebase.messaging.MessagingErrorCode;
 import com.google.firebase.messaging.Notification;
 import com.ssolitim.child_tracking_system.api.dto.record.RecordResponse;
 import com.ssolitim.child_tracking_system.api.model.Record;
@@ -70,7 +77,7 @@ public class RecordService {
     }
 
     @Transactional
-    public void filesUploadOnServer(MultipartFile[] uploadFiles) throws FirebaseMessagingException {
+    public void filesUploadOnServer(MultipartFile[] uploadFiles, Boolean direct) throws FirebaseMessagingException {
         LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
         String timestamp = now.format(formatter);
 
@@ -94,8 +101,25 @@ public class RecordService {
             .build();
         recordRepository.save(record);
 
-        // 안드로이드에서 토큰 발급 후 "token" 채워넣기
-        firebaseMessaging.send(makeMessage("ExponentPushToken[CJ-6dbFJNUbf9kaqF55iaG]", "이탈 감지", "이탈이 감지되었습니다."));
+        String directMessage = "왼쪽";
+        if (direct) {
+            directMessage = "오른쪽";
+        }
+
+        /*
+        try {
+            firebaseMessaging.send(makeMessage(
+                "ExponentPushToken[CJ-6dbFJNUbf9kaqF55iaG]",
+                "이탈 감지",
+                directMessage + "방향으로" + "이탈이 감지되었습니다.")
+            );
+        } catch (FirebaseMessagingException e) {
+            if (e.getMessagingErrorCode() == MessagingErrorCode.INVALID_ARGUMENT) {
+                throw new IllegalArgumentException("푸시 알림 토큰이 유효하지 않습니다.");
+            } else {
+                throw e;
+            }
+        }*/
     }
 
     @Transactional
@@ -133,6 +157,23 @@ public class RecordService {
         return records.stream()
             .map(RecordResponse::from)
             .toList();
+    }
+
+    @Transactional
+    public void testAlarm(String token) throws FirebaseMessagingException {
+        try {
+            firebaseMessaging.send(makeMessage(
+                token,
+                "알람 테스트",
+                "테스트 알람 메시지입니다.")
+            );
+        } catch (FirebaseMessagingException e) {
+            if (e.getMessagingErrorCode() == MessagingErrorCode.INVALID_ARGUMENT) {
+                throw new IllegalArgumentException("푸시 알림 토큰이 유효하지 않습니다.");
+            } else {
+                throw e;
+            }
+        }
     }
 
     private String getFullPath(String contentType, String timestamp) {
