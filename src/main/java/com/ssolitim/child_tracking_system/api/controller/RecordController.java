@@ -132,7 +132,7 @@ public class RecordController {
     @PostMapping("/record/upload")
     public void filesUpload(
         @RequestPart MultipartFile[] uploadFiles,
-        @RequestParam(name = "direct", required = false, defaultValue = "false") boolean direct
+        @RequestParam(name = "direct", required = false, defaultValue = "미감지") String direct
     ) throws FirebaseMessagingException {
         recordService.filesUploadOnServer(uploadFiles, direct);
     }
@@ -238,6 +238,28 @@ public class RecordController {
         @RequestBody @Valid TestAlarmRequest request
     ) throws FirebaseMessagingException {
         recordService.testAlarm(request.token());
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @ApiResponses(
+        value = {
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "404", content = @Content(schema = @Schema(hidden = true)))
+        }
+    )
+    @Operation(summary = "음성 파일 업로드")
+    @PostMapping("/record/audio")
+    public ResponseEntity<Void> uploadAudio(
+        @RequestPart MultipartFile uploadFile
+    ) {
+        // 확장자 검사
+        if (!uploadFile.getOriginalFilename().toLowerCase().endsWith(".mp3")) {
+            throw new IllegalArgumentException("오직 .mp3 파일만 허용됩니다.");
+        }
+
+        recordService.audioUploadOnServer(uploadFile);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

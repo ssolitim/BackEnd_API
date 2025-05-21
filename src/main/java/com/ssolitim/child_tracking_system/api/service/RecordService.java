@@ -8,12 +8,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.http.*;
-import org.springframework.web.client.RestTemplate;
-
-import java.util.HashMap;
-import java.util.Map;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -40,6 +34,7 @@ public class RecordService {
     private final FirebaseMessaging firebaseMessaging;
     private static final String IMAGE_STORAGE_ADDRESS = "/home/ubuntu/detect/images/";
     private static final String VIDEO_STORAGE_ADDRESS = "/home/ubuntu/detect/videos/";
+    private static final String AUDIO_STORAGE_ADDRESS = "/home/ubuntu/detect/audio/";
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -77,7 +72,7 @@ public class RecordService {
     }
 
     @Transactional
-    public void filesUploadOnServer(MultipartFile[] uploadFiles, Boolean direct) throws FirebaseMessagingException {
+    public void filesUploadOnServer(MultipartFile[] uploadFiles, String direct) throws FirebaseMessagingException {
         LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
         String timestamp = now.format(formatter);
 
@@ -101,17 +96,22 @@ public class RecordService {
             .build();
         recordRepository.save(record);
 
-        String directMessage = "왼쪽";
-        if (direct) {
+        String directMessage;
+        if (direct == "left") {
+            directMessage = "왼쪽";
+        } else if(direct == "straight") {
+            directMessage = "직진";
+        } else if(direct == "right") {
             directMessage = "오른쪽";
+        } else {
+            directMessage = "미확인";
         }
 
-        /*
         try {
             firebaseMessaging.send(makeMessage(
-                "ExponentPushToken[CJ-6dbFJNUbf9kaqF55iaG]",
-                "이탈 감지",
-                directMessage + "방향으로" + "이탈이 감지되었습니다.")
+                "dIYKMNCNQJmVVhwFzWIkeW:APA91bEJWJ1DSF4ASzpjJoLz6_fNZxTtGjvPBXQWShJI6tpqhTTqAEzLoV_hCZBPO-rjtrsb0_mNd0khEmWf-VxRFGGh5NNb7KcBeVquiMeJMHN9y379wew",
+                "아동 이탈 감지",
+                "아동이 " + directMessage + " 방향으로 " + "이탈이 감지되었습니다.\n 어플을 확인해주세요.")
             );
         } catch (FirebaseMessagingException e) {
             if (e.getMessagingErrorCode() == MessagingErrorCode.INVALID_ARGUMENT) {
@@ -119,7 +119,17 @@ public class RecordService {
             } else {
                 throw e;
             }
-        }*/
+        }
+    }
+
+    @Transactional
+    public void audioUploadOnServer(MultipartFile audioFile) {
+        String fullPath = AUDIO_STORAGE_ADDRESS + "audio" + ".mp3";
+        try {
+            audioFile.transferTo(new File(fullPath));
+        } catch (IOException e) {
+            throw new IllegalArgumentException("파일 저장 중 오류 발생", e);
+        }
     }
 
     @Transactional
